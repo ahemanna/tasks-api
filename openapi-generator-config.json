@@ -1,0 +1,14 @@
+{
+  "useBeanValidation": "true",
+  "useTags": "true",
+  "generateApiTests": "false",
+  "generateApiDocumentation": "false",
+  "supportingFiles": "false",
+  "serializableModel": "true",
+  "generateAliasAsModel": "true",
+  "dateLibrary": "java8",
+  "basePackage": "in.ahemanna.api.management",
+  "modelPackage": "in.ahemanna.api.management.model",
+  "apiPackage": "in.ahemanna.api.management.api",
+  "configPackage": "in.ahemanna.api.management.config"
+}

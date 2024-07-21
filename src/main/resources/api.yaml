@@ -1,0 +1,491 @@
+openapi: "3.0.2"
+info:
+  title: Tasks Management API
+  description: Tasks Management API is a RESTFul API to manage the tasks. The API provides capabilities to  perform CRUDL operations.
+  version: "1.0"
+  contact:
+    email: developer@ahemanna.in
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://dev.api.ahemanna.in
+    description: Dev
+  - url: https://api.ahemanna.in
+    description: Prod
+tags:
+  - name: Tasks
+    description: Perform CRUDL operations on tasks
+paths:
+  /v1/tasks:
+    get:
+      summary: List All Tasks
+      description: List all available tasks
+      operationId: list-tasks
+      tags:
+        - Tasks
+      parameters:
+        - $ref: '#/components/parameters/status'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/task'
+                  total_items:
+                    $ref: '#/components/schemas/total_items'
+                  total_pages:
+                    $ref: '#/components/schemas/total_pages'
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/links'
+              examples:
+                list-tasks:
+                  $ref: '#/components/examples/list-tasks'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                bad-request:
+                  $ref: '#/components/examples/bad-request'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                internal-server-error:
+                  $ref: '#/components/examples/internal-server-error'
+    post:
+      summary: Create A Task
+      description: Create a new task
+      operationId: post-task
+      tags:
+        - Tasks
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/task'
+            examples:
+              request:
+                $ref: '#/components/examples/request'
+      responses:
+        '201':
+          description: Created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/task'
+              examples:
+                task:
+                  $ref: '#/components/examples/task'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                bad-request:
+                  $ref: '#/components/examples/bad-request'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                unprocessable-entity:
+                  $ref: '#/components/examples/unprocessable-entity'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                internal-server-error:
+                  $ref: '#/components/examples/internal-server-error'
+  /v1/tasks/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      summary: Retrieve A Task
+      description: Retrieve task for the requested ID
+      operationId: get-task
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/task'
+              examples:
+                task:
+                  $ref: '#/components/examples/task'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                not-found:
+                  $ref: '#/components/examples/not-found'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                internal-server-error:
+                  $ref: '#/components/examples/internal-server-error'
+    put:
+      summary: Replace A Task
+      description: Replace task for the requested ID
+      operationId: put-task
+      tags:
+        - Tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/task'
+            examples:
+              request:
+                $ref: '#/components/examples/request'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                bad-request:
+                  $ref: '#/components/examples/bad-request'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                not-found:
+                  $ref: '#/components/examples/not-found'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                unprocessable-entity:
+                  $ref: '#/components/examples/unprocessable-entity'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                internal-server-error:
+                  $ref: '#/components/examples/internal-server-error'
+    delete:
+      summary: Delete A Task
+      description: Delete task for the requested ID
+      operationId: delete-task
+      tags:
+        - Tasks
+      responses:
+        '204':
+          description: No Content
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                unprocessable-entity:
+                  $ref: '#/components/examples/unprocessable-entity'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                internal-server-error:
+                  $ref: '#/components/examples/internal-server-error'
+components:
+  schemas:
+    id:
+      type: string
+      format: uuid
+      description: A unique identifier for the task
+      example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+      readOnly: true
+    status:
+      type: string
+      description: Status of the task
+      enum:
+        - PENDING
+        - IN_PROGRESS
+        - COMPLETED
+    task:
+      description: Representation of Task resource
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        title:
+          type: string
+          description: Title of the task
+          minLength: 1
+          maxLength: 1024
+          example: Test task
+        description:
+          type: string
+          description: Description of the task
+          minLength: 0
+          maxLength: 2048
+          example: Test description
+        status:
+          $ref: '#/components/schemas/status'
+        created_at:
+          type: string
+          description: Task created timestamp
+          format: date-time
+          readOnly: true
+          example: 2024-07-12T14:07:39:008Z
+        modified_at:
+          type: string
+          description: Task modified timestamp
+          format: date-time
+          readOnly: true
+          example: 2024-07-12T14:07:39:008Z
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/links'
+          readOnly: true
+      required:
+        - title
+        - status
+    error:
+      type: object
+      description: Represents the error object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        code:
+          type: string
+          description: Code for the error returned
+          minLength: 1
+          example: E0001
+        description:
+          type: string
+          description: Description for the error returned
+          minLength: 1
+          example: One or more mandatory parameter is missing in the request or is invalid
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp indicating when the error was returned
+          example: 2024-07-12T14:07:39.008Z
+    size:
+      type: integer
+      description: Represents the number of items requested per page
+      minimum: 1
+      default: 10
+      example: 10
+    page:
+      type: integer
+      description: Represents the page number
+      minimum: 1
+      default: 1
+      example: 10
+    total_items:
+      type: integer
+      description: Represents the total number items in the collection
+      minimum: 0
+      example: 10
+    total_pages:
+      description: Represents the total number of pages in the result set
+      type: integer
+      minimum: 0
+      example: 1
+    links:
+      description: Represents the HATEOAS links
+      type: object
+      properties:
+        href:
+          type: string
+          description: Represents the target URI of the related resource
+          format: uri
+          example: "https://api.ahemanna.in/v1/tasks/{id}"
+        rel:
+          type: string
+          description: Represents the name of the relation to the target resource
+          example: self
+        method:
+          type: string
+          description: Represents the HTTP verb that must be used to make a request to the target of the link
+          example: GET
+  parameters:
+    id:
+      name: id
+      in: path
+      description: Unique identifier for the task
+      required: true
+      schema:
+        $ref: '#/components/schemas/id'
+    status:
+      name: status
+      in: query
+      description: Filter by status
+      required: false
+      schema:
+        $ref: '#/components/schemas/status'
+    size:
+      name: size
+      in: query
+      description: Number of items to return per page
+      required: false
+      schema:
+        $ref: '#/components/schemas/size'
+    page:
+      name: page
+      in: query
+      description: Page number
+      required: false
+      schema:
+        $ref: '#/components/schemas/page'
+  examples:
+    request:
+      value:
+        {
+          "title": "Test task",
+          "description": "Test description",
+          "status": "PENDING"
+        }
+    list-tasks:
+      value:
+        {
+          "items": [
+            {
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "title": "Test task",
+              "description": "Test description",
+              "status": "PENDING",
+              "created_at": "2024-07-12T14:07:39:008Z",
+              "updated_at": "2024-07-12T14:07:39:008Z",
+              "links": [
+                {
+                  "href": "https://api.ahemanna.in/v1/tasks/3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                  "rel": "self",
+                  "method": "GET"
+                }
+              ]
+            }
+          ],
+          "total_items": 100,
+          "total_pages": 10,
+          "links": [
+            {
+              "href": "https://api.ahemanna.in/v1/tasks?page=2&size=10",
+              "rel": "current",
+              "method": "GET"
+            },
+            {
+              "href": "https://api.ahemanna.in/v1/tasks?page=3&size=10",
+              "rel": "next",
+              "method": "GET"
+            },
+            {
+              "href": "https://api.ahemanna.in/v1/tasks?page=1&size=10",
+              "rel": "previous",
+              "method": "GET"
+            },
+            {
+              "href": "https://api.ahemanna.in/v1/tasks?page=1&size=10",
+              "rel": "first",
+              "method": "GET"
+            },
+            {
+              "href": "https://api.ahemanna.in/v1/tasks?page=10&size=10",
+              "rel": "last",
+              "method": "GET"
+            }
+          ]
+        }
+    task:
+      value:
+        {
+          "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "title": "Test task",
+          "description": "Test description",
+          "status": "PENDING",
+          "created_at": "2024-07-12T14:07:39:008Z",
+          "updated_at": "2024-07-12T14:07:39:008Z",
+          "links": [
+            {
+              "href": "https://api.ahemanna.in/v1/tasks/3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "rel": "self",
+              "method": "GET"
+            }
+          ]
+        }
+    bad-request:
+      value:
+        {
+          "id": "e61he6fd-egag-defb-2c63-b3ifc6ff161f",
+          "code": "E0001",
+          "description": "One or more mandatory parameter is missing in the request or is invalid",
+          "timestamp": "2024-07-12T14:07:39.008Z"
+        }
+    not-found:
+      value:
+        {
+          "id": "e61he6fd-egag-defb-2c63-b3ifc6ff161f",
+          "code": "E0002",
+          "description": "The requested resource was not found",
+          "timestamp": "2024-07-12T14:07:39.008Z"
+        }
+    unprocessable-entity:
+      value:
+        {
+          "id": "e61he6fd-egag-defb-2c63-b3ifc6ff161f",
+          "code": "E0003",
+          "description": "Unable to process the request",
+          "timestamp": "2024-07-12T14:07:39.008Z"
+        }
+    internal-server-error:
+      value:
+        {
+          "id": "e61he6fd-egag-defb-2c63-b3ifc6ff161f",
+          "code": "E0004",
+          "description": "Something went wrong",
+          "timestamp": "2024-07-12T14:07:39.008Z"
+        }
